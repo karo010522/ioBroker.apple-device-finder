@@ -1,0 +1,145 @@
+{
+  "common": {
+    "name": "apple-device-finder",
+    "version": "0.1.0",
+    "news": {
+      "0.1.0": {
+        "en": "initial release",
+        "de": "Erstveröffentlichung"
+      }
+    },
+    "title": "Apple Device Finder",
+    "titleLang": {
+      "en": "Apple Device Finder",
+      "de": "Apple Device Finder"
+    },
+    "desc": {
+      "en": "Locate Apple devices (iPhone, iPad, Mac, AirTag) via iCloud 'Find My', with modern SRP/2FA login",
+      "de": "Ortet Apple-Geräte (iPhone, iPad, Mac, AirTag) über iCloud 'Find My', mit moderner SRP/2FA-Anmeldung"
+    },
+    "authors": [
+      "KaRo010522 <info@robertlabes.de>"
+    ],
+    "keywords": ["icloud", "apple", "find my", "iphone", "location"],
+    "license": "MIT",
+    "platform": "Javascript/Node.js",
+    "main": "main.js",
+    "icon": "apple-device-finder.png",
+    "enabled": true,
+    "extIcon": "https://raw.githubusercontent.com/karo010522/ioBroker.apple-device-finder/main/admin/apple-device-finder.png",
+    "readme": "https://github.com/karo010522/ioBroker.apple-device-finder/blob/main/README.md",
+    "loglevel": "info",
+    "mode": "daemon",
+    "type": "geoposition",
+    "compact": true,
+    "connectionType": "cloud",
+    "dataSource": "poll",
+    "adminUI": {
+      "config": "json"
+    },
+    "materialize": true,
+    "messagebox": true,
+    "dependencies": [
+      { "js-controller": ">=5.0.0" }
+    ],
+    "globalDependencies": [
+      { "admin": ">=6.0.0" }
+    ]
+  },
+  "native": {
+    "username": "",
+    "password": "",
+    "authMethod": "srp",
+    "trustDevice": true,
+    "includeFamily": false,
+    "pollInterval": 5,
+    "geocodeProvider": "none",
+    "geocodeApiKey": "",
+    "geocodeLanguage": "de",
+    "mapExportEnabled": false,
+    "mapExportPath": "/opt/iobroker/apple-device-finder-map/devices.json",
+    "mapExportDevices": ""
+  },
+  "protectedNative": ["password", "geocodeApiKey"],
+  "encryptedNative": ["password", "geocodeApiKey"],
+  "objects": [],
+  "instanceObjects": [
+    {
+      "_id": "info",
+      "type": "channel",
+      "common": { "name": "Information" },
+      "native": {}
+    },
+    {
+      "_id": "info.connection",
+      "type": "state",
+      "common": {
+        "role": "indicator.connected",
+        "name": "Verbindung zu iCloud aktiv",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "auth",
+      "type": "channel",
+      "common": { "name": "Anmeldung / Zwei-Faktor-Code" },
+      "native": {}
+    },
+    {
+      "_id": "auth.mfaRequired",
+      "type": "state",
+      "common": {
+        "role": "indicator",
+        "name": "2FA-Code wird benötigt",
+        "type": "boolean",
+        "read": true,
+        "write": false,
+        "def": false
+      },
+      "native": {}
+    },
+    {
+      "_id": "auth.mfaCode",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Hier den 6-stelligen 2FA-Code eintragen",
+        "type": "string",
+        "read": true,
+        "write": true,
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "auth.lastError",
+      "type": "state",
+      "common": {
+        "role": "text",
+        "name": "Letzter Anmeldefehler",
+        "type": "string",
+        "read": true,
+        "write": false,
+        "def": ""
+      },
+      "native": {}
+    },
+    {
+      "_id": "refreshAll",
+      "type": "state",
+      "common": {
+        "role": "button",
+        "name": "Alle Geräte jetzt aktualisieren",
+        "type": "boolean",
+        "read": false,
+        "write": true,
+        "def": false
+      },
+      "native": {}
+    }
+  ]
+}

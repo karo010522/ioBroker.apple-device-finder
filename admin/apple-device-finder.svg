@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <linearGradient id="pin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FF6B5B"/>
+      <stop offset="100%" stop-color="#E4382A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Hintergrund: einheitliches gruenes abgerundetes Viereck, kein Verlauf -->
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="#22A046"/>
+
+  <!-- Weisser Kreis, zentriert -->
+  <circle cx="60" cy="64" r="34" fill="#FFFFFF"/>
+
+  <!-- Smartphone-Silhouette im Kreis -->
+  <rect x="47" y="45" width="26" height="38" rx="5" fill="#22A046"/>
+  <rect x="50.5" y="50" width="19" height="25" rx="1.5" fill="#FFFFFF"/>
+  <circle cx="60" cy="78.5" r="2" fill="#22A046"/>
+
+  <!-- Ortungs-Pin am Rand des Kreises, weiter nach aussen -->
+  <path d="M104 56
+           c0 -9 -7.5 -16.5 -16.5 -16.5
+           s-16.5 7.5 -16.5 16.5
+           c0 12 16.5 30 16.5 30
+           s16.5 -18 16.5 -30 z"
+        fill="url(#pin)" stroke="#B8291D" stroke-width="1.5"/>
+  <circle cx="87.5" cy="55.5" r="6" fill="#FFFFFF"/>
+</svg>

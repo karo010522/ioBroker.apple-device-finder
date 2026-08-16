@@ -1,0 +1,69 @@
+name: Test and Release
+
+on:
+  push:
+    branches:
+      - "main"
+    tags:
+      - "v*.*.*"
+  pull_request: {}
+
+jobs:
+  check-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: npm install
+        run: npm install
+      - name: package.json / io-package.json Konsistenz prüfen
+        run: npm run test:package
+
+  adapter-tests:
+    needs: [check-and-lint]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: npm install
+        run: npm install
+      - name: Tests
+        run: npm test
+
+  # Läuft nur, wenn ein Tag im Format vX.Y.Z gepusht wird (z. B. v0.2.0).
+  # Voraussetzung: Repository-Secret NPM_TOKEN mit einem npm "Automation"-Token.
+  release:
+    needs: [adapter-tests]
+    if: contains(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
+      - name: npm install
+        run: npm install
+      - name: Version aus Tag gegen package.json prüfen
+        run: |
+          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "Tag v$TAG_VERSION passt nicht zu package.json Version $PKG_VERSION"
+            exit 1
+          fi
+      - name: npm publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: GitHub Release erstellen
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
