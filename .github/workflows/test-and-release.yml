@@ -38,17 +38,27 @@ jobs:
         run: npm test
 
   # Läuft nur, wenn ein Tag im Format vX.Y.Z gepusht wird (z. B. v0.2.0).
-  # Voraussetzung: Repository-Secret NPM_TOKEN mit einem npm "Automation"-Token.
+  # Nutzt npm Trusted Publishing (OIDC) - kein NPM_TOKEN-Secret nötig.
+  # Voraussetzung: In den npm-Paketeinstellungen unter "Trusted Publishers"
+  # muss dieses Repo + diese Workflow-Datei als GitHub-Actions-Publisher
+  # eingetragen sein (siehe README). Für den allerersten Publish eines neuen
+  # Pakets muss einmalig manuell (npm publish lokal) veröffentlicht werden,
+  # da Trusted Publishing ein bereits existierendes Paket voraussetzt.
   release:
     needs: [adapter-tests]
     if: contains(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write # nötig, damit GitHub Actions ein OIDC-Token für npm ausstellen kann
+      contents: write # nötig für das GitHub-Release
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           registry-url: "https://registry.npmjs.org"
+      - name: Aktuelle npm-Version installieren (OIDC-Unterstützung braucht npm >= 11.5.1)
+        run: npm install -g npm@latest
       - name: npm install
         run: npm install
       - name: Version aus Tag gegen package.json prüfen
@@ -59,11 +69,10 @@ jobs:
             echo "Tag v$TAG_VERSION passt nicht zu package.json Version $PKG_VERSION"
             exit 1
           fi
-      - name: npm publish
+      - name: npm publish (via Trusted Publishing / OIDC)
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: GitHub Release erstellen
         uses: softprops/action-gh-release@v2
         with:
           generate_release_notes: true
+
