@@ -18,7 +18,7 @@ on:
   pull_request: {}
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: ioBroker/testing-action-check@v1
         with:
-          node-version: "22.x"
+          node-version: "24.x"
           lint: false
 
   adapter-tests:
@@ -62,7 +62,7 @@ jobs:
     steps:
       - uses: ioBroker/testing-action-deploy@v1
         with:
-          node-version: "22.x"
+          node-version: "24.x"
           github-token: ${{ secrets.GITHUB_TOKEN }}
           # npm-token bewusst weggelassen - Trusted Publishing (OIDC) ist
           # unter npmjs.com fuer dieses Repository konfiguriert.

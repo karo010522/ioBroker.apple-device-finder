@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "apple-device-finder",
-    "version": "0.1.4",
+    "version": "0.1.5",
     "news": {
+      "0.1.5": {
+        "en": "Second round of official repository review fixes: node engines >=22, removed redundant chai/mocha devDependencies, deploy workflow on Node 24, node:https prefix in lib/geocode.js and test/package.js, changelog entry for 0.1.4",
+        "de": "Zweite Runde offizieller Repository-Review-Fixes: Node-engines >=22, redundante chai/mocha-devDependencies entfernt, Deploy-Workflow auf Node 24, node:https-Präfix in lib/geocode.js und test/package.js, Changelog-Eintrag für 0.1.4",
+        "ru": "Второй раунд исправлений официального ревью: node engines >=22, удалены избыточные chai/mocha, деплой на Node 24, префиксы node: в оставшихся файлах, запись в changelog для 0.1.4",
+        "pt": "Segunda ronda de correções da revisão oficial: engines node >=22, chai/mocha removidos, deploy em Node 24, prefixos node: nos ficheiros restantes, entrada no changelog para 0.1.4",
+        "nl": "Tweede ronde officiële review-fixes: node engines >=22, overbodige chai/mocha verwijderd, deploy op Node 24, node:-prefixen in overige bestanden, changelog-item voor 0.1.4",
+        "fr": "Deuxième série de corrections de la revue officielle : engines node >=22, chai/mocha redondants supprimés, déploiement sur Node 24, préfixes node: dans les fichiers restants, entrée changelog pour 0.1.4",
+        "it": "Seconda tornata di correzioni della revisione ufficiale: engines node >=22, chai/mocha ridondanti rimossi, deploy su Node 24, prefissi node: nei file rimanenti, voce di changelog per 0.1.4",
+        "es": "Segunda ronda de correcciones de la revisión oficial: engines node >=22, chai/mocha redundantes eliminados, deploy en Node 24, prefijos node: en archivos restantes, entrada de changelog para 0.1.4",
+        "pl": "Druga runda poprawek z oficjalnego przeglądu: engines node >=22, usunięto zbędne chai/mocha, deploy na Node 24, prefiksy node: w pozostałych plikach, wpis w changelogu dla 0.1.4",
+        "uk": "Другий раунд виправлень офіційного огляду: node engines >=22, видалено зайві chai/mocha, деплой на Node 24, префікси node: у решті файлів, запис у changelog для 0.1.4",
+        "zh-cn": "第二轮官方审核修复：node engines >=22，移除冗余的 chai/mocha，部署改用 Node 24，其余文件补充 node: 前缀，为 0.1.4 添加更新日志条目"
+      },
       "0.1.4": {
         "en": "Addressed official repository review findings: updated GitHub Actions to official ioBroker reusable actions, raised dependency versions, English-only README with integrated changelog and license, node: module prefixes, adapter-managed timers, responsive admin UI sizes",
         "de": "Anmerkungen aus dem offiziellen Repository-Review behoben: GitHub Actions auf offizielle ioBroker-Actions umgestellt, Abhängigkeiten angehoben, englischsprachige README mit integriertem Changelog und Lizenz, node:-Modul-Präfixe, adaptereigene Timer, responsive Admin-UI-Größen",

@@ -105,6 +105,21 @@ adapters this project succeeds.
 	### **WORK IN PROGRESS**
 -->
 
+### 0.1.5 (2026-08-17)
+
+- (KaRo010522) Second round of official repository review fixes: node
+  engines >=22, removed redundant chai/mocha devDependencies, deploy
+  workflow on Node 24, `node:` prefix in `lib/geocode.js` and
+  `test/package.js`, changelog entry for 0.1.4
+
+### 0.1.4 (2026-08-17)
+
+- (KaRo010522) Addressed official repository review findings: updated GitHub
+  Actions to the official ioBroker reusable actions (check/adapter/deploy),
+  raised dependency versions, English-only README with integrated changelog
+  and license, `node:` module prefixes, adapter-managed timers, responsive
+  admin UI sizes, added `package-lock.json`
+
 ### 0.1.3 (2026-08-17)
 
 - (KaRo010522) Fixed adapter-checker findings: added missing translations,
