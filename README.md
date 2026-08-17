@@ -1,177 +1,163 @@
-# ioBroker.apple-device-finder (Apple Device Finder)
+# ioBroker.apple-device-finder
 
-Ortet Apple-Geräte (iPhone, iPad, Mac, AirTag über Familienfreigabe) via iCloud
-"Find My" – als ioBroker-Adapter mit **zeitgemäßem SRP/2FA-Login**.
+Locate Apple devices (iPhone, iPad, Mac, AirTag via Family Sharing) via
+iCloud "Find My" - an ioBroker adapter with a **modern SRP/2FA login**.
 
-## Warum dieses Projekt existiert
+## Why this project exists
 
-Es gab bereits zwei ioBroker-Adapter für diesen Zweck:
+There were already two ioBroker adapters for this purpose:
 
-- [`ioBroker.find-my-iphone`](https://github.com/iobroker-community-adapters/ioBroker.find-my-iphone) –
-  archiviert am 26.04.2023, nicht mehr funktionsfähig.
-- [`ioBroker.apple-find-me`](https://github.com/PfisterDaniel/ioBroker.apple-find-me) –
-  letztes Release 27.09.2022, seither faktisch unmaintained.
+- [`ioBroker.find-my-iphone`](https://github.com/iobroker-community-adapters/ioBroker.find-my-iphone) -
+  archived on 2023-04-26, no longer functional.
+- [`ioBroker.apple-find-me`](https://github.com/PfisterDaniel/ioBroker.apple-find-me) -
+  last release 2022-09-27, effectively unmaintained since.
 
-Beide sind an derselben Ursache gescheitert: Apple hat den iCloud-Web-Login
-Ende 2024 auf das **SRP-6a-Protokoll** umgestellt. Selbst das mit Abstand
-größte Projekt in diesem Bereich, `pyicloud` (Python, Basis für die
-Home-Assistant-iCloud-Integration), war dadurch monatelang komplett kaputt.
+Both failed for the same reason: Apple switched the iCloud web login to the
+**SRP-6a protocol** in late 2024. Even the by far largest project in this
+space, `pyicloud` (Python, the basis for the Home Assistant iCloud
+integration), was completely broken by this for months.
 
-Dieser Adapter setzt daher nicht auf einen Fork, sondern auf
-[**icloudjs**](https://github.com/foxt/icloud.js) – eine aktiv gepflegte
-Node.js-Bibliothek, die den modernen SRP-Login samt 2FA-Flow und
-persistentem Trust-Token bereits beherrscht (inspiriert von `pyicloud` und
+This adapter therefore doesn't build on a fork, but on
+[**icloudjs**](https://github.com/foxt/icloud.js) - an actively maintained
+Node.js library that already handles the modern SRP login together with the
+2FA flow and a persistent trust token (inspired by `pyicloud` and
 `icloud-photos-sync`).
 
-## Was hier "das Beste aus allen Projekten" bedeutet
+## What "the best of all projects" means here
 
-| Übernommen von | Was |
+| Taken from | What |
 |---|---|
-| `apple-find-me` | Auswahl an Reverse-Geocoding-Anbietern (HERE, Bing, Google, Geoapify, LocationIQ, PositionStack, TomTom) + kostenlose OSM/Nominatim-Option, moderne Admin-JSON-Config |
-| `find-my-iphone` | Pro-Gerät- und globale "Refresh"-Buttons, um Apple nicht unnötig oft anzufragen |
-| `icloud.js` (foxt) | Der eigentliche, aktuell funktionierende SRP/2FA-Login inkl. Trust-Token-Persistenz |
-| `iCloud3` (Home Assistant) | Vorbild für den Umgang mit wiederkehrenden Login-Problemen: klare State-basierte 2FA-Eingabe statt Konsolen-Interaktion |
+| `apple-find-me` | Choice of reverse-geocoding providers (HERE, Bing, Google, Geoapify, LocationIQ, PositionStack, TomTom) plus a free OSM/Nominatim option, modern admin JSON config |
+| `find-my-iphone` | Per-device and global "refresh" buttons to avoid querying Apple unnecessarily often |
+| `icloud.js` (foxt) | The actual, currently working SRP/2FA login including trust-token persistence |
+| `iCloud3` (Home Assistant) | Model for handling recurring login issues: clear state-based 2FA input instead of console interaction |
 
-## Funktionsumfang (v0.1.0)
+## Features
 
-- Login mit Apple-ID + Passwort, SRP-Auth, 2FA über einen ioBroker-State
-  (`auth.mfaCode`) statt Terminal-Eingabe
-- Trust-Token wird persistiert → nach dem ersten 2FA-Login i. d. R. kein
-  erneuter Code mehr nötig
-- Pro Gerät: Name, Modell, Akkustand, Akkustatus, Position (lat/lon,
-  Genauigkeit, Zeitstempel), Stromsparmodus, optional Adresse per
-  Reverse-Geocoding
-- Manuelles Aktualisieren pro Gerät oder für alle Geräte per Button-State
-- Konfigurierbares Poll-Intervall
+- Login with Apple ID + password, SRP auth, 2FA via an ioBroker state
+  (`auth.mfaCode`) or directly in the instance configuration, instead of
+  terminal input
+- Trust token is persisted -> usually no repeated 2FA code needed after the
+  first login (may not apply to every account, see Known limitations)
+- Per device: name, model, battery level, battery status, position (lat/lon,
+  accuracy, timestamp), low power mode, optional address via
+  reverse geocoding
+- Manual refresh per device or for all devices via a button state
+- Configurable poll interval
+- Optional per-device `showOnMap` switch for use in map dashboards (e.g.
+  vis-2 + OpenStreetMap)
+- Automatic retry when the Apple web service returns a truncated response
 
-## Wichtiger Fix: 2FA-Code kommt nicht an
+## Notable fixes included in this adapter
 
-Seit Apples Umstellung auf SRP-6a schickt Apple den 2FA-Code **nicht mehr
-automatisch** nach dem Signin-Request. Es ist ein zusätzlicher, expliziter
-`GET https://idmsa.apple.com/appleauth/auth/verify/trusteddevice`-Request
-mit den Session-Headern des SRP-Logins nötig, um den Push tatsächlich
-auszulösen. Ohne diesen Trigger bleibt der Adapter im Status `MfaRequested`
-hängen, ohne dass jemals ein Code ankommt.
+Since Apple's switch to SRP-6a, several undocumented quirks in Apple's own
+web login had to be worked around. Details are kept in the source code
+comments in `main.js`, in short:
 
-Dieses Problem betrifft nicht nur diesen Adapter – es wurde z. B. im April
-2026 auch für `rclone`s iCloud-Drive-Backend gemeldet und dort auf genau
-diese Weise gefixt (Issue `rclone/rclone#9324`).
+- Apple no longer automatically sends the 2FA push after the sign-in
+  request; an additional explicit trigger request is required (the same
+  issue was reported for `rclone`'s iCloud Drive backend in April 2026,
+  `rclone/rclone#9324`).
+- On some Apple accounts, `icloudjs` (v1.6.2) incorrectly rejects a
+  **correct** 2FA code because Apple responds with HTTP 409 instead of the
+  expected 204, even though the response body confirms the code was valid.
+  The adapter detects this specific pattern and corrects the response
+  before it reaches the library.
+- The actual device fields (`name`, `deviceDisplayName`, `batteryLevel`,
+  `location`, ...) are nested one level deeper under `device.deviceInfo` in
+  `icloudjs`, not directly on the device object - a common source of
+  `undefined` values if accessed incorrectly.
 
-`main.js` ruft daher direkt nach Erkennen von `status === "MfaRequested"`
-die Methode `requestTrustedDeviceCode()` auf, die über
-`icloud.authStore.getMfaHeaders()` die nötigen SRP-Session-Header holt und
-den fehlenden Trigger-Request manuell nachschickt.
+## Known limitations
 
-## Wichtiger Fix #2: Korrekter 2FA-Code wird trotzdem mit HTTP 409 abgelehnt
+- Devices are grouped under `devices.<DeviceName>`. Objects from earlier
+  test runs with cryptic names (raw device IDs instead of readable names)
+  may remain as orphaned objects, since ioBroker does not rename existing
+  objects automatically - remove them manually from the object tree if
+  needed.
+- The per-device "refresh" button currently refreshes all devices, not only
+  the selected one.
+- On some accounts, Apple does not return a trust token via the
+  `/2sv/trust` request (visible in the log as
+  `[icloudjs] Unable to write trust token: ... Received null`). In that
+  case, a new 2FA code is required after every adapter restart. Login
+  itself keeps working correctly regardless.
+- "Play Sound" is not implemented yet; `icloudjs` does not currently expose
+  a public method for it. The `<device>.playSound` state exists as a
+  placeholder and only logs a warning for now.
+- No "Lost Mode" / remote wipe (intentionally not implemented - higher
+  risk; use the official Apple device or web UI if needed).
+- No automatic fallback to a second authentication method if Apple changes
+  the login flow again.
 
-Bei manchen Apple-Accounts antwortet Apple auf die Code-Validierung
-(`POST .../verify/trusteddevice/securitycode`) mit **HTTP 409**, obwohl der
-eingegebene Code korrekt war - erkennbar am Feld `securityCode.valid: true`
-im Response-Body. `icloudjs` (Version 1.6.2) prüft nur den HTTP-Status und
-wirft in diesem Fall fälschlich `Invalid status code: 409`, obwohl die
-Anmeldung eigentlich weiterlaufen könnte.
+## Important notice
 
-Da `icloudjs` intern `node-fetch@2` als eigene Dependency nutzt (nicht
-Node.js' globales `fetch`), patcht `main.js` gezielt den Require-Cache-Eintrag
-von `node-fetch`, bevor `icloudjs` geladen wird (`patchIcloudNodeFetchForLogging()`).
-Dadurch kann der Adapter jeden Request/Response mitschneiden (Debug-Log:
-`[fetch->]` / `[fetch<-]`) - und genau diesen einen bekannten Fehlerfall
-erkennen und die Antwort transparent mit Status 204 (No Content - der von
-`icloudjs` an dieser Stelle erwartete Erfolgscode) statt 409 an `icloudjs`
-durchreichen, bevor die Bibliothek selbst den Fehler wirft.
+This adapter relies on an **unofficial** and undocumented Apple web API.
+It can break at any time due to changes on Apple's side, and Apple's terms
+of service do not explicitly cover this kind of automated access. Use at
+your own risk - similar to `pyicloud`, `icloud3`, or the original ioBroker
+adapters this project succeeds.
 
-Das ist ein gezielter Workaround für einen Bug in `icloudjs`, kein
-allgemeiner "alles auf 200 umbiegen"-Hack: Nur wenn Apple explizit
-`securityCode.valid: true` bestätigt, wird der Status korrigiert. Ein
-tatsächlich falscher Code führt weiterhin zu einem echten Fehler.
+## Changelog
 
-## Wichtiger Fix #3: Gerätenamen waren immer leer
+<!--
+	Placeholder for the next version (at the beginning of the line):
+	### **WORK IN PROGRESS**
+-->
 
-Bei `icloudjs` liegen die eigentlichen Gerätefelder (`name`, `deviceDisplayName`,
-`batteryLevel`, `location`, ...) nicht direkt auf dem `iCloudFindMyDevice`-Objekt
-aus `findMy.devices`, sondern eine Ebene tiefer unter `device.deviceInfo`. Ein
-direkter Zugriff wie `device.name` ist daher **immer** `undefined` - die
-`iCloudFindMyDeviceInfo`-Typdefinition in der Doku beschreibt die Struktur von
-`device.deviceInfo`, nicht von `device` selbst. `main.js` liest die Felder
-jetzt korrekt über `device.deviceInfo`.
+### 0.1.3 (2026-08-17)
 
-## Was (noch) fehlt / bekannte Lücken
+- (KaRo010522) Fixed adapter-checker findings: added missing translations,
+  tier, licenseInformation, updated dependency versions
 
-- **Geräte liegen unter `devices.<Gerätename>`**, nicht direkt unter der
-  Instanz-Root (übersichtlicher neben `auth`/`info`). Objekte aus früheren
-  Testläufen mit kryptischen Namen (Rohgeräte-IDs statt Klarname) bleiben als
-  Karteileichen bestehen - ioBroker löscht/benennt bestehende Objekte nicht
-  automatisch um. Bei Bedarf im Objektbaum manuell löschen.
-- **Der "Dieses Gerät aktualisieren"-Button pro Gerät aktualisiert aktuell
-  alle Geräte**, nicht nur das eine (die an Apple übergebene Geräte-ID müsste
-  die interne Apple-ID sein, nicht der lesbare Name - das ist noch nicht
-  sauber verdrahtet).
+### 0.1.2 (2026-08-16)
 
-- **Trust-Token wird bei manchen Accounts nicht dauerhaft gespeichert**: Im
-  Log kann `[icloudjs] Unable to write trust token: ... Received null`
-  auftauchen. Apple liefert in diesem Fall über den `/2sv/trust`-Request
-  keinen Token zurück, weshalb nach jedem Adapter-Neustart erneut ein
-  2FA-Code nötig ist. Der Login selbst funktioniert davon unabhängig
-  weiterhin einwandfrei - nur eben nicht "silent" nach einem Neustart.
+- (KaRo010522) Fixed adapter-checker findings: added missing translations,
+  tier, licenseInformation, updated dependency versions
 
-- **Sound abspielen ("Wo ist mein iPhone?")**: `icloudjs` bietet dafür in der
-  aktuell verwendeten Version keine öffentliche Methode. Der State
-  `<Gerät>.playSound` ist als Platzhalter angelegt, ruft aber aktuell nur
-  eine Warnung ins Log. Wer das ergänzen möchte: Der FindMy-Webservice bietet
-  einen `playSound`-Request analog zu dem, was `find-my-iphone` (altes
-  `alertDevice`) genutzt hat – müsste gegen die aktuelle API nachgebaut werden.
-- Kein "Verloren-Modus" / Fernlöschung (bewusst nicht eingebaut – höheres
-  Risiko, im Zweifel Original-Apple-Geräte/Web nutzen).
-- Kein automatisches "Fallback" auf ein zweites Auth-Verfahren, falls Apple
-  den Ablauf erneut ändert.
+### 0.1.1 (2026-08-16)
 
-## Wichtiger Hinweis
+- (KaRo010522) Fixed device polling after session refresh, reduced verbose
+  logging, new icon and name
 
-Dies ist **inoffizieller** Zugriff auf eine nicht-öffentlich dokumentierte
-Apple-Web-API. Das kann jederzeit durch Änderungen bei Apple brechen, und
-Apples Nutzungsbedingungen decken automatisierten Zugriff dieser Art nicht
-ausdrücklich. Nutzung auf eigenes Risiko – ähnlich wie bei `pyicloud`,
-`icloud3` oder den ursprünglichen ioBroker-Adaptern.
+### 0.1.0 (2026-08-16)
 
-## Installation
+- (KaRo010522) Initial release
+  - Login via `icloudjs` using the modern SRP-6a procedure (instead of the
+    legacy login used by the old adapters `apple-find-me` and
+    `find-my-iphone`, which no longer works)
+  - Automatic trigger request so Apple actually sends the 2FA code to
+    trusted devices
+  - Workaround for an `icloudjs` bug where Apple answers the 2FA code
+    confirmation with HTTP 409 instead of 204 for some accounts
+  - 2FA code entry directly in the instance configuration (no detour via
+    the object tree needed)
+  - Device list including battery level, position, address (optional
+    reverse geocoding via several selectable providers)
+  - Per-device `showOnMap` switch for map applications (e.g. vis-2 +
+    OpenStreetMap)
+  - Automatic retry on truncated responses from the Apple web service
 
-**Über die ioBroker-Admin-Oberfläche (empfohlen):**
+## License
 
-Im Adapter-Tab oben rechts auf das Wolke-Symbol / „Benutzerdefiniert" klicken
-und folgende URL eintragen:
+MIT License
 
-```
-https://github.com/karo010522/ioBroker.apple-device-finder
-```
+Copyright (c) 2026 KaRo010522
 
-ioBroker installiert den Adapter direkt von GitHub. **Updates** funktionieren
-genauso: Sobald eine neue Version auf GitHub liegt, zeigt die Adapterliste
-einen Update-Hinweis, ein Klick genügt.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-**Per Kommandozeile (alternativ):**
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-```bash
-cd /opt/iobroker
-iobroker url https://github.com/karo010522/ioBroker.apple-device-finder
-iobroker add apple-device-finder
-```
-
-**Lokal aus dem Quellordner (z. B. für eigene Anpassungen):**
-
-```bash
-cd /opt/iobroker
-npm install /pfad/zu/iobroker.apple-device-finder --production
-iobroker upload apple-device-finder
-iobroker add apple-device-finder
-```
-
-Danach in der Admin-Oberfläche Apple-ID + Passwort eintragen, Instanz starten
-und – falls 2FA aktiv ist – im Bereich "2FA-Code eingeben" derselben
-Instanz-Konfigurationsseite den zugeschickten Code eintragen und auf
-„Code senden" klicken. Alternativ funktioniert weiterhin die direkte
-Eingabe über den Objektbaum (`apple-device-finder.0.auth.mfaCode`).
-
-## Lizenz
-
-MIT – siehe LICENSE. Enthält keinen Code der referenzierten Projekte, nur
-konzeptionelle Anleihen (Feature-Ideen), wie oben tabellarisch aufgeführt.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

@@ -19,9 +19,9 @@
  */
 
 const utils = require("@iobroker/adapter-core");
-const path = require("path");
-const fs = require("fs");
-const https = require("https");
+const path = require("node:path");
+const fs = require("node:fs");
+const https = require("node:https");
 
 // icloudjs wird lazy geladen, damit der Adapter auch dann sauber startet/lint-bar bleibt,
 // wenn npm install noch nicht gelaufen ist.
@@ -146,7 +146,7 @@ class AppleDeviceFinder extends utils.Adapter {
     await this.login();
 
     const intervalMinutes = Math.max(1, Number(this.config.pollInterval) || 5);
-    this.pollTimer = setInterval(() => this.pollDevices(), intervalMinutes * 60 * 1000);
+    this.pollTimer = this.setInterval(() => this.pollDevices(), intervalMinutes * 60 * 1000);
   }
 
   /**
@@ -412,7 +412,7 @@ class AppleDeviceFinder extends utils.Adapter {
       // betroffene Poll-Zyklus komplett ausfallen.
       if (isRetry === undefined && /invalid json|unexpected end of json/i.test(msg)) {
         this.log.debug("Abgeschnittene Antwort von Apple erhalten, versuche einmaligen Retry in 3s...");
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => this.setTimeout(resolve, 3000));
         return this.pollDevices(onlyDeviceId, true);
       }
       if (isRetry === true && /invalid json|unexpected end of json/i.test(msg)) {
@@ -429,7 +429,7 @@ class AppleDeviceFinder extends utils.Adapter {
         } catch (cacheErr) {
           this.log.debug("Konnte FindMy-Service-Cache nicht zurücksetzen: " + cacheErr.message);
         }
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => this.setTimeout(resolve, 2000));
         return this.pollDevices(onlyDeviceId, "final");
       }
       if (isRetry === "final") {
@@ -597,7 +597,7 @@ class AppleDeviceFinder extends utils.Adapter {
 
   onUnload(callback) {
     try {
-      if (this.pollTimer) clearInterval(this.pollTimer);
+      if (this.pollTimer) this.clearInterval(this.pollTimer);
       callback();
     } catch (e) {
       callback();

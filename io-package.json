@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "apple-device-finder",
-    "version": "0.1.3",
+    "version": "0.1.4",
     "news": {
+      "0.1.4": {
+        "en": "Addressed official repository review findings: updated GitHub Actions to official ioBroker reusable actions, raised dependency versions, English-only README with integrated changelog and license, node: module prefixes, adapter-managed timers, responsive admin UI sizes",
+        "de": "Anmerkungen aus dem offiziellen Repository-Review behoben: GitHub Actions auf offizielle ioBroker-Actions umgestellt, Abhängigkeiten angehoben, englischsprachige README mit integriertem Changelog und Lizenz, node:-Modul-Präfixe, adaptereigene Timer, responsive Admin-UI-Größen",
+        "ru": "Устранены замечания официального ревью репозитория: обновлены GitHub Actions, повышены версии зависимостей, README только на английском с журналом изменений и лицензией",
+        "pt": "Resolvidos os apontamentos da revisão oficial do repositório: GitHub Actions atualizado, dependências atualizadas, README apenas em inglês com changelog e licença integrados",
+        "nl": "Opmerkingen uit de officiële repository-review verwerkt: GitHub Actions bijgewerkt, dependencies verhoogd, alleen-Engelse README met geïntegreerde changelog en licentie",
+        "fr": "Corrections issues de la revue officielle du dépôt : GitHub Actions mis à jour, dépendances relevées, README uniquement en anglais avec changelog et licence intégrés",
+        "it": "Risolti i rilievi della revisione ufficiale del repository: GitHub Actions aggiornato, dipendenze aggiornate, README solo in inglese con changelog e licenza integrati",
+        "es": "Resueltos los hallazgos de la revisión oficial del repositorio: GitHub Actions actualizado, dependencias actualizadas, README solo en inglés con changelog y licencia integrados",
+        "pl": "Rozwiązano uwagi z oficjalnego przeglądu repozytorium: zaktualizowano GitHub Actions, podniesiono wersje zależności, README tylko po angielsku ze zintegrowanym changelogiem i licencją",
+        "uk": "Виправлено зауваження офіційного огляду репозиторію: оновлено GitHub Actions, підвищено версії залежностей, README лише англійською з інтегрованим журналом змін та ліцензією",
+        "zh-cn": "修复了官方仓库审核意见：更新了 GitHub Actions，提升了依赖版本，README 改为纯英文并整合了更新日志和许可证"
+      },
       "0.1.3": {
         "en": "No functional changes - added missing changelog entry for the adapter-checker",
         "de": "Keine funktionalen Änderungen - fehlenden Changelog-Eintrag für den Adapter-Checker ergänzt",
@@ -107,10 +120,10 @@
     },
     "messagebox": true,
     "dependencies": [
-      { "js-controller": ">=5.0.19" }
+      { "js-controller": ">=6.0.11" }
     ],
     "globalDependencies": [
-      { "admin": ">=6.0.0" }
+      { "admin": ">=7.6.20" }
     ]
   },
   "native": {

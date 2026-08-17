@@ -10,37 +10,58 @@
     "username": {
       "type": "text",
       "label": "Apple-ID (E-Mail)",
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "password": {
       "type": "password",
       "label": "Passwort",
       "help": "Wird verschlüsselt gespeichert. Bei aktivierter 2FA ist dies dein normales Apple-ID-Passwort, kein App-spezifisches Passwort.",
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "authMethod": {
       "type": "select",
       "label": "Auth-Methode",
       "options": [
-        { "value": "srp", "label": "srp (empfohlen, aktueller Apple-Login)" },
-        { "value": "legacy", "label": "legacy (alter Login, meist nicht mehr funktionsfähig)" }
+        {
+          "value": "srp",
+          "label": "srp (empfohlen, aktueller Apple-Login)"
+        },
+        {
+          "value": "legacy",
+          "label": "legacy (alter Login, meist nicht mehr funktionsfähig)"
+        }
       ],
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "trustDevice": {
       "type": "checkbox",
       "label": "Trust-Token speichern (kein erneuter 2FA-Code bei jedem Neustart)",
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "includeFamily": {
       "type": "checkbox",
       "label": "Geräte der Familienfreigabe einbeziehen",
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "_mfaHeader": {
       "type": "header",
@@ -50,13 +71,20 @@
     "_mfaHelp": {
       "type": "staticText",
       "text": "Falls im Log 'Bitte 2FA-Code eintragen' erscheint: Code hier eintragen und senden. Die Instanz muss dafür laufen (gespeicherte Zugangsdaten reichen nicht - erst starten, dann hier den zugeschickten Code eintragen).",
-      "sm": 12
+      "xs": 12,
+      "sm": 12,
+      "md": 12,
+      "lg": 12,
+      "xl": 12
     },
     "mfaCodeInput": {
       "type": "text",
       "label": "6-stelliger 2FA-Code",
+      "xs": 12,
       "sm": 12,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 4
     },
     "_mfaSend": {
       "type": "sendTo",
@@ -64,8 +92,11 @@
       "jsonData": "{\"code\": \"${data.mfaCodeInput}\"}",
       "label": "Code senden",
       "showProcess": true,
+      "xs": 12,
       "sm": 12,
-      "md": 4
+      "md": 4,
+      "lg": 4,
+      "xl": 4
     },
     "_pollHeader": {
       "type": "header",
@@ -78,8 +109,11 @@
       "min": 1,
       "max": 1440,
       "help": "Kürzere Intervalle erhöhen das Risiko von Rate-Limiting durch Apple. 5 Minuten sind ein sinnvoller Standard.",
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "_geoHeader": {
       "type": "header",
@@ -90,31 +124,67 @@
       "type": "select",
       "label": "Anbieter für Reverse-Geocoding",
       "options": [
-        { "value": "none", "label": "Deaktiviert (nur Koordinaten)" },
-        { "value": "nominatim", "label": "OpenStreetMap / Nominatim (kostenlos, kein Key)" },
-        { "value": "here", "label": "HERE Maps (API-Key nötig)" },
-        { "value": "bing", "label": "Bing Maps (API-Key nötig)" },
-        { "value": "google", "label": "Google Maps (API-Key nötig)" },
-        { "value": "geoapify", "label": "Geoapify (API-Key nötig)" },
-        { "value": "locationiq", "label": "LocationIQ (API-Key nötig)" },
-        { "value": "positionstack", "label": "PositionStack (API-Key nötig)" },
-        { "value": "tomtom", "label": "TomTom (API-Key nötig)" }
+        {
+          "value": "none",
+          "label": "Deaktiviert (nur Koordinaten)"
+        },
+        {
+          "value": "nominatim",
+          "label": "OpenStreetMap / Nominatim (kostenlos, kein Key)"
+        },
+        {
+          "value": "here",
+          "label": "HERE Maps (API-Key nötig)"
+        },
+        {
+          "value": "bing",
+          "label": "Bing Maps (API-Key nötig)"
+        },
+        {
+          "value": "google",
+          "label": "Google Maps (API-Key nötig)"
+        },
+        {
+          "value": "geoapify",
+          "label": "Geoapify (API-Key nötig)"
+        },
+        {
+          "value": "locationiq",
+          "label": "LocationIQ (API-Key nötig)"
+        },
+        {
+          "value": "positionstack",
+          "label": "PositionStack (API-Key nötig)"
+        },
+        {
+          "value": "tomtom",
+          "label": "TomTom (API-Key nötig)"
+        }
       ],
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "geocodeApiKey": {
       "type": "password",
       "label": "API-Key des gewählten Anbieters",
       "hidden": "data.geocodeProvider === 'none' || data.geocodeProvider === 'nominatim'",
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "geocodeLanguage": {
       "type": "text",
       "label": "Sprache für Adressen (z. B. de, en)",
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "_mapHeader": {
       "type": "header",
@@ -124,29 +194,42 @@
     "_mapHelp": {
       "type": "staticText",
       "text": "Schreibt eine gefilterte JSON-Datei mit Positionen für die separate Karten-App. Nur hier ausgewählte Geräte verlassen ioBroker.",
-      "sm": 12
+      "xs": 12,
+      "sm": 12,
+      "md": 12,
+      "lg": 12,
+      "xl": 12
     },
     "mapExportEnabled": {
       "type": "checkbox",
       "label": "Export für externe Karte aktivieren",
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "mapExportPath": {
       "type": "text",
       "label": "Pfad der Export-Datei (Docker-Volume)",
       "hidden": "!data.mapExportEnabled",
       "help": "Muss auf ein Volume zeigen, das der Karten-Container ebenfalls eingebunden hat.",
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     },
     "mapExportDevices": {
       "type": "text",
       "label": "Zu exportierende Geräte (Komma-getrennt, wie unter devices.*, leer = alle)",
       "hidden": "!data.mapExportEnabled",
       "help": "Beispiel: MacBook_Air_von_Robert,iPhone_von_Robert",
+      "xs": 12,
       "sm": 12,
-      "md": 6
+      "md": 6,
+      "lg": 6,
+      "xl": 6
     }
   }
 }
