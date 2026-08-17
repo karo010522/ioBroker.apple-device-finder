@@ -1,29 +1,70 @@
 {
   "common": {
     "name": "apple-device-finder",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "news": {
+      "0.1.1": {
+        "en": "Fixed device polling after session refresh, reduced verbose logging, new icon and name",
+        "de": "Geräteabruf nach Sitzungsauffrischung repariert, Logging reduziert, neues Icon und neuer Name",
+        "ru": "Исправлен опрос устройств после обновления сессии, уменьшено логирование, новая иконка и имя",
+        "pt": "Corrigida a consulta de dispositivos após atualização de sessão, log reduzido, novo ícone e nome",
+        "nl": "Apparaatopvraag na sessievernieuwing gerepareerd, minder logging, nieuw icoon en nieuwe naam",
+        "fr": "Correction de l'interrogation des appareils après rafraîchissement de session, journalisation réduite, nouvelle icône et nouveau nom",
+        "it": "Corretta l'interrogazione dei dispositivi dopo l'aggiornamento della sessione, log ridotto, nuova icona e nuovo nome",
+        "es": "Corregida la consulta de dispositivos tras la renovación de sesión, registro reducido, nuevo icono y nombre",
+        "pl": "Naprawiono odpytywanie urządzeń po odświeżeniu sesji, ograniczono logowanie, nowa ikona i nazwa",
+        "uk": "Виправлено опитування пристроїв після оновлення сесії, зменшено логування, нова іконка та назва",
+        "zh-cn": "修复了会话刷新后的设备轮询问题，减少了日志输出，新增图标和名称"
+      },
       "0.1.0": {
         "en": "initial release",
-        "de": "Erstveröffentlichung"
+        "de": "Erstveröffentlichung",
+        "ru": "Первый выпуск",
+        "pt": "Lançamento inicial",
+        "nl": "Eerste release",
+        "fr": "Première version",
+        "it": "Prima versione",
+        "es": "Lanzamiento inicial",
+        "pl": "Pierwsze wydanie",
+        "uk": "Перший випуск",
+        "zh-cn": "初始版本"
       }
     },
-    "title": "Apple Device Finder",
     "titleLang": {
       "en": "Apple Device Finder",
-      "de": "Apple Device Finder"
+      "de": "Apple Device Finder",
+      "ru": "Apple Device Finder",
+      "pt": "Apple Device Finder",
+      "nl": "Apple Device Finder",
+      "fr": "Apple Device Finder",
+      "it": "Apple Device Finder",
+      "es": "Apple Device Finder",
+      "pl": "Apple Device Finder",
+      "uk": "Apple Device Finder",
+      "zh-cn": "Apple Device Finder"
     },
     "desc": {
       "en": "Locate Apple devices (iPhone, iPad, Mac, AirTag) via iCloud 'Find My', with modern SRP/2FA login",
-      "de": "Ortet Apple-Geräte (iPhone, iPad, Mac, AirTag) über iCloud 'Find My', mit moderner SRP/2FA-Anmeldung"
+      "de": "Ortet Apple-Geräte (iPhone, iPad, Mac, AirTag) über iCloud 'Find My', mit moderner SRP/2FA-Anmeldung",
+      "ru": "Определение местоположения устройств Apple (iPhone, iPad, Mac, AirTag) через iCloud 'Найти', с современным входом SRP/2FA",
+      "pt": "Localize dispositivos Apple (iPhone, iPad, Mac, AirTag) via iCloud 'Buscar', com login SRP/2FA moderno",
+      "nl": "Apple-apparaten lokaliseren (iPhone, iPad, Mac, AirTag) via iCloud 'Zoek mijn', met moderne SRP/2FA-login",
+      "fr": "Localisez vos appareils Apple (iPhone, iPad, Mac, AirTag) via 'Localiser' iCloud, avec connexion SRP/2FA moderne",
+      "it": "Individua i dispositivi Apple (iPhone, iPad, Mac, AirTag) tramite 'Dov'è' di iCloud, con accesso SRP/2FA moderno",
+      "es": "Localiza dispositivos Apple (iPhone, iPad, Mac, AirTag) mediante 'Buscar' de iCloud, con inicio de sesión SRP/2FA moderno",
+      "pl": "Lokalizuj urządzenia Apple (iPhone, iPad, Mac, AirTag) przez iCloud 'Znajdź', z nowoczesnym logowaniem SRP/2FA",
+      "uk": "Визначення місцезнаходження пристроїв Apple (iPhone, iPad, Mac, AirTag) через iCloud 'Знайти', із сучасним входом SRP/2FA",
+      "zh-cn": "通过 iCloud“查找”定位 Apple 设备（iPhone、iPad、Mac、AirTag），采用现代 SRP/2FA 登录"
     },
     "authors": [
       "KaRo010522 <info@robertlabes.de>"
     ],
     "keywords": ["icloud", "apple", "find my", "iphone", "location"],
-    "license": "MIT",
+    "licenseInformation": {
+      "type": "free",
+      "license": "MIT"
+    },
     "platform": "Javascript/Node.js",
-    "main": "main.js",
     "icon": "apple-device-finder.png",
     "enabled": true,
     "extIcon": "https://raw.githubusercontent.com/karo010522/ioBroker.apple-device-finder/main/admin/apple-device-finder.png",
@@ -31,16 +72,16 @@
     "loglevel": "info",
     "mode": "daemon",
     "type": "geoposition",
+    "tier": 2,
     "compact": true,
     "connectionType": "cloud",
     "dataSource": "poll",
     "adminUI": {
       "config": "json"
     },
-    "materialize": true,
     "messagebox": true,
     "dependencies": [
-      { "js-controller": ">=5.0.0" }
+      { "js-controller": ">=5.0.19" }
     ],
     "globalDependencies": [
       { "admin": ">=6.0.0" }
