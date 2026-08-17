@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "apple-device-finder",
-    "version": "0.1.2",
+    "version": "0.1.1",
     "news": {
+      "0.1.2": {
+        "en": "Fixed adapter-checker findings: added missing translations, tier, licenseInformation, updated dependency versions",
+        "de": "Adapter-Checker-Hinweise behoben: fehlende Übersetzungen, Tier, licenseInformation ergänzt, Abhängigkeiten aktualisiert",
+        "ru": "Исправлены замечания adapter-checker: добавлены переводы, уровень, licenseInformation, обновлены зависимости",
+        "pt": "Corrigidos os apontamentos do adapter-checker: traduções, tier e licenseInformation adicionados, dependências atualizadas",
+        "nl": "Adapter-checker opmerkingen opgelost: vertalingen, tier en licenseInformation toegevoegd, dependencies bijgewerkt",
+        "fr": "Corrections signalées par l'adapter-checker : traductions, tier et licenseInformation ajoutés, dépendances mises à jour",
+        "it": "Corretti i rilievi dell'adapter-checker: aggiunte traduzioni, tier e licenseInformation, aggiornate le dipendenze",
+        "es": "Corregidos los hallazgos del adapter-checker: traducciones, tier y licenseInformation añadidos, dependencias actualizadas",
+        "pl": "Naprawiono uwagi adapter-checkera: dodano tłumaczenia, tier i licenseInformation, zaktualizowano zależności",
+        "uk": "Виправлено зауваження adapter-checker: додано переклади, tier та licenseInformation, оновлено залежності",
+        "zh-cn": "修复了 adapter-checker 的问题：补充了翻译、tier 和 licenseInformation，更新了依赖版本"
+      },
       "0.1.1": {
         "en": "Fixed device polling after session refresh, reduced verbose logging, new icon and name",
         "de": "Geräteabruf nach Sitzungsauffrischung repariert, Logging reduziert, neues Icon und neuer Name",
