@@ -1,78 +1,68 @@
 name: Test and Release
 
+# Nutzt die offiziellen wiederverwendbaren ioBroker-GitHub-Actions
+# (https://github.com/ioBroker/testing-action-check,
+#  https://github.com/ioBroker/testing-action-adapter,
+#  https://github.com/ioBroker/testing-action-deploy).
+# Der Deploy-Schritt nutzt npm Trusted Publishing (OIDC) - dafür muss unter
+# npmjs.com/package/iobroker.apple-device-finder/access ein Trusted Publisher
+# für dieses Repository + diese Workflow-Datei eingetragen sein. Kein
+# NPM_TOKEN-Secret noetig.
+
 on:
   push:
-    branches:
-      - "main"
+    branches: [main]
     tags:
-      - "v*.*.*"
+      - "v[0-9]+.[0-9]+.[0-9]+"
+      - "v[0-9]+.[0-9]+.[0-9]+-**"
   pull_request: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   check-and-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: ioBroker/testing-action-check@v1
         with:
-          node-version: "20"
-      - name: npm install
-        run: npm install
-      - name: package.json / io-package.json Konsistenz prüfen
-        run: npm run test:package
+          node-version: "22.x"
+          lint: false
 
   adapter-tests:
     needs: [check-and-lint]
-    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, '[skip ci]') == false
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node-version: [18, 20, 22]
+        node-version: [20.x, 22.x, 24.x]
+        os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: ioBroker/testing-action-adapter@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: npm install
-        run: npm install
-      - name: Tests
-        run: npm test
+          os: ${{ matrix.os }}
 
-  # Läuft nur, wenn ein Tag im Format vX.Y.Z gepusht wird (z. B. v0.2.0).
-  # Nutzt npm Trusted Publishing (OIDC) - kein NPM_TOKEN-Secret nötig.
-  # Voraussetzung: In den npm-Paketeinstellungen unter "Trusted Publishers"
-  # muss dieses Repo + diese Workflow-Datei als GitHub-Actions-Publisher
-  # eingetragen sein (siehe README). Für den allerersten Publish eines neuen
-  # Pakets muss einmalig manuell (npm publish lokal) veröffentlicht werden,
-  # da Trusted Publishing ein bereits existierendes Paket voraussetzt.
-  release:
-    needs: [adapter-tests]
-    if: contains(github.ref, 'refs/tags/v')
+  deploy:
+    needs: [check-and-lint, adapter-tests]
+
+    # Laeuft nur, wenn ein Commit mit einem Versions-Tag (vX.Y.Z) gepusht wird.
+    if: |
+      contains(github.event.head_commit.message, '[skip ci]') == false &&
+      github.event_name == 'push' &&
+      startsWith(github.ref, 'refs/tags/v')
+
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write # nötig, damit GitHub Actions ein OIDC-Token für npm ausstellen kann
-      contents: write # nötig für das GitHub-Release
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          registry-url: "https://registry.npmjs.org"
-      - name: Aktuelle npm-Version installieren (OIDC-Unterstützung braucht npm >= 11.5.1)
-        run: npm install -g npm@latest
-      - name: npm install
-        run: npm install
-      - name: Version aus Tag gegen package.json prüfen
-        run: |
-          TAG_VERSION="${GITHUB_REF#refs/tags/v}"
-          PKG_VERSION="$(node -p "require('./package.json').version")"
-          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
-            echo "Tag v$TAG_VERSION passt nicht zu package.json Version $PKG_VERSION"
-            exit 1
-          fi
-      - name: npm publish (via Trusted Publishing / OIDC)
-        run: npm publish
-      - name: GitHub Release erstellen
-        uses: softprops/action-gh-release@v2
-        with:
-          generate_release_notes: true
 
+    permissions:
+      id-token: write # noetig fuer npm Trusted Publishing (OIDC)
+      contents: write # noetig fuer das GitHub-Release
+
+    steps:
+      - uses: ioBroker/testing-action-deploy@v1
+        with:
+          node-version: "22.x"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # npm-token bewusst weggelassen - Trusted Publishing (OIDC) ist
+          # unter npmjs.com fuer dieses Repository konfiguriert.
