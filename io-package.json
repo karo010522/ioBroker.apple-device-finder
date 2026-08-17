@@ -1,8 +1,21 @@
 {
   "common": {
     "name": "apple-device-finder",
-    "version": "0.1.1",
+    "version": "0.1.3",
     "news": {
+      "0.1.3": {
+        "en": "No functional changes - added missing changelog entry for the adapter-checker",
+        "de": "Keine funktionalen Änderungen - fehlenden Changelog-Eintrag für den Adapter-Checker ergänzt",
+        "ru": "Никаких функциональных изменений - добавлена недостающая запись в журнал изменений для adapter-checker",
+        "pt": "Sem alterações funcionais - adicionada entrada de changelog em falta para o adapter-checker",
+        "nl": "Geen functionele wijzigingen - ontbrekende changelog-vermelding voor de adapter-checker toegevoegd",
+        "fr": "Aucun changement fonctionnel - ajout de l'entrée de changelog manquante pour l'adapter-checker",
+        "it": "Nessuna modifica funzionale - aggiunta la voce di changelog mancante per l'adapter-checker",
+        "es": "Sin cambios funcionales - añadida la entrada de changelog que faltaba para el adapter-checker",
+        "pl": "Brak zmian funkcjonalnych - dodano brakujący wpis w dzienniku zmian dla adapter-checkera",
+        "uk": "Без функціональних змін - додано відсутній запис журналу змін для adapter-checker",
+        "zh-cn": "无功能变更 - 为 adapter-checker 补充了缺失的更新日志条目"
+      },
       "0.1.2": {
         "en": "Fixed adapter-checker findings: added missing translations, tier, licenseInformation, updated dependency versions",
         "de": "Adapter-Checker-Hinweise behoben: fehlende Übersetzungen, Tier, licenseInformation ergänzt, Abhängigkeiten aktualisiert",

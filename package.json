@@ -1,6 +1,6 @@
 {
   "name": "iobroker.apple-device-finder",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "ioBroker Adapter zum Orten von Apple-Geräten (iPhone, iPad, Mac, AirTag) über iCloud 'Find My', mit moderner SRP/2FA-Authentifizierung",
   "author": {
     "name": "KaRo010522",
